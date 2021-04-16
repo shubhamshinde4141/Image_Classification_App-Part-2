@@ -83,121 +83,112 @@ class _MyCameraState extends State<MyCamera> {
         backgroundColor: Color(0xff885566),
         title: Text("Camera"),
       ),
-      body:Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('assets/images/camera.jpg'),
-            fit: BoxFit.cover)),
-            child: Center(
-        child: Column(
-        children: [
-          Container(
-      height: 500,
-      width: MediaQuery.of(context).size.width * 0.8,
-      child: imageFile == null
-            ? Center(
-            child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-        'No image selected.',
-        style: TextStyle(fontSize: 20),
-        ),
-        Icon(
-        Icons.photo,
-        size: 200,
-        color: Colors.black26,
-        )
-      ],
-            ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                height: 500,
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: imageFile == null
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'No image selected.',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Image.file(imageFile),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              //here we have to add prediction text
+              Column(
+                children: [
+                  Container(
+                    width: 300,
+                    height: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: name != null
+                        ? Text(
+                            "Name -${name}",
+                            style: TextStyle(fontSize: 20),
+                          )
+                        : Text(
+                            "Name - ",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    width: 300,
+                    height: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: accuracy != null
+                        ? Text(
+                            " Confidence  - ${accuracy}",
+                            style: TextStyle(fontSize: 20),
+                          )
+                        : Text(
+                            "Confidence  -  ",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                  ),
+                ],
+              ),
+              //end prediction
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      width: 80,
+                      height: 70,
+                      child: RaisedButton(
+                        child: Icon(
+                          Icons.add_a_photo,
+                          size: 40,
+                        ),
+                        onPressed: openCamera,
+                      )),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Container(
+                      child: FloatingActionButton.extended(
+                    icon: Icon(
+                      Icons.cancel,
+                      size: 30,
+                    ),
+                    onPressed: cancel,
+                    label: Text("cancel"),
+                    backgroundColor: Colors.pink,
+                  ))
+                ],
               )
-            : Image.file(imageFile),
+            ],
           ),
-          SizedBox(
-      height: 5,
-          ),
-          //here we have to add prediction text
-          Column(
-      children: [
-          Container(
-              width: 300,
-              height: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: name != null
-              ? Text(
-        "Name -${name}",
-        style: TextStyle(fontSize: 20),
-      )
-              : Text(
-        "Name - ",
-        style: TextStyle(fontSize: 20),
+        ),
       ),
-            ),
-          SizedBox(
-              height: 5,
-            ),
-          Container(
-              width: 300,
-              height: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: accuracy != null
-              ? Text(
-        " Confidence  - ${accuracy}",
-        style: TextStyle(fontSize: 20),
-      )
-              : Text(
-        "Confidence  -  ",
-        style: TextStyle(fontSize: 20),
-      ),
-            ),
-      ],
-          ),
-          //end prediction
-          SizedBox(
-      height: 20,
-            ),
-          Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-            Container(
-                  width: 80,
-                  height: 70,
-                  child: RaisedButton(
-                child: Icon(
-      Icons.add_a_photo,
-      size: 40,
-                ),
-                onPressed: openCamera,
-                  )),
-            SizedBox(
-                width: 10,
-              ),
-            Container(
-                  child: FloatingActionButton.extended(
-                icon: Icon(
-                  Icons.cancel,
-                  size: 30,
-                ),
-                onPressed: cancel,
-                label: Text("cancel"),
-                backgroundColor: Colors.pink,
-              ))
-      ],
-            )
-        ],
-          ),
-      ),
-          ),
     );
   }
 }

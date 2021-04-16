@@ -1,5 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
+import 'package:lottie/lottie.dart';
+
+import 'constants.dart';
 import 'custom_dialogue_box.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -25,9 +29,9 @@ class _MyGalleryState extends State<MyGallery> {
       applymodeltoimage(our_image);
     });
   }*/
-  String token="66be94c19b9bff1b6408359d5304b75194c3cce0";
-  String url="https://owlbot.info/api/v4/dictionary/";
-  String head="Authorization: Token 66be94c19b9bff1b6408359d5304b75194c3cce0";
+  String token = "66be94c19b9bff1b6408359d5304b75194c3cce0";
+  String url = "https://owlbot.info/api/v4/dictionary/";
+  String head = "Authorization: Token 66be94c19b9bff1b6408359d5304b75194c3cce0";
   File imageFile;
   var picker = ImagePicker();
   bool isloaded = false;
@@ -35,85 +39,101 @@ class _MyGalleryState extends State<MyGallery> {
   String name;
   String accuracy;
   Map<String, dynamic> details;
-  final FlutterTts flutterTts=FlutterTts();
-  bool flag=false;
-  GoogleTranslator translator=GoogleTranslator();
+  final FlutterTts flutterTts = FlutterTts();
+  bool flag = false;
+  GoogleTranslator translator = GoogleTranslator();
+  bool check = true;
 
-  Future _speak ()
-  async {
-    
+  Future _speak() async {
     await flutterTts.setLanguage("en-IN");
     await flutterTts.speak(name);
-    
   }
-  Future _speak1 ()
-  async {
-    
-    
+
+  Future _speak1() async {
     var translation = await translator.translate(name, to: 'hi');
     print(translation);
-    
+
     //await flutterTts.speak(translation);
     await flutterTts.setLanguage("hi-IN");
     await flutterTts.speak(translation.text);
-  } 
-   _search()
-  async {
-    Response response=await http.get(url+name.trim(),headers:{'Authorization':"Token "+token });
-     details=json.decode(response.body);
-    print(details);
-   
   }
-  
-  showAlertDialog(BuildContext context) {
 
-  
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return StatefulBuilder(
-        builder: (context,setState)
-      {
-        return AlertDialog(
-    
-              content:(flag?Icon(Icons.volume_up):Icon(Icons.volume_down)),
-              actions: [
-                FlatButton(
-                    child: Text("English"),
-                    onPressed:  () {
-                        setState(() {
-                          flag=true;
-                        });
-                        _speak();
-                    },
+  _search() async {
+    Response response = await http
+        .get(url + name.trim(), headers: {'Authorization': "Token " + token});
+    details = json.decode(response.body);
+    setState(() {
+      check = false;
+    });
+    print(details);
+  }
+
+  showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            content: (flag
+                ? IconButton(
+                    icon: Icon(Icons.volume_up),
+                    onPressed: () {},
+                    iconSize: 30,
+                  )
+                : IconButton(
+                    icon: Icon(Icons.volume_down),
+                    onPressed: () {},
+                    iconSize: 30,
+                  )),
+            actions: [
+              Card(
+                color: kBlueColor,
+                child: FlatButton(
+                  child: Text(
+                    "English",
+                    style: TextStyle(fontSize: 15, color: Colors.black),
                   ),
-                   
-                FlatButton(
-                  child: Text("Hindi"),
-                  onPressed:  () {
+                  onPressed: () {
                     setState(() {
-                      flag=true;
+                      flag = true;
                     });
-                      _speak1();
+                    _speak();
                   },
                 ),
-
-                FlatButton(
-                  child: Text("Cancel"),
-                  onPressed:  () {
+              ),
+              Card(
+                color: kBlueColor,
+                child: FlatButton(
+                  child: Text(
+                    "Hindi",
+                    style: TextStyle(fontSize: 15, color: Colors.black),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      flag = true;
+                    });
+                    _speak1();
+                  },
+                ),
+              ),
+              Card(
+                color: kActiveIconColor,
+                child: FlatButton(
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(fontSize: 15, color: Colors.black),
+                  ),
+                  onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
-
-
-    ],
-  );
-
-      });
-    },
-  );
-}
- 
+              ),
+            ],
+          );
+        });
+      },
+    );
+  }
 
   Future openGallery() async {
     var picture = await picker.getImage(source: ImageSource.gallery);
@@ -165,147 +185,203 @@ class _MyGalleryState extends State<MyGallery> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff885566),
         title: Text("Gallery"),
       ),
-      body:Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-      image: DecorationImage(
-          image: AssetImage('assets/images/Gallery.jpg'),
-          fit: BoxFit.cover)),
-          child: Center(
-            child: Column(
-      children: [
-        Container(
-          height: 350,
-          width: MediaQuery.of(context).size.width * 0.7,
-          child: imageFile == null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'No image selected.',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Icon(
-                        Icons.photo,
-                        size: 150,
-                        color: Colors.black26,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+            /*image: DecorationImage(
+                image: AssetImage('assets/images/Gallery.jpg'),
+                fit: BoxFit.cover)*/
+            ),
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                height: 350,
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: imageFile == null
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'No image selected.',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            //eethe lottie chi file takaychiiii
+                            //
+                            //
+                            Container(
+                                height:
+                                    200, //MediaQuery.of(context).size.height *0.2,
+                                width: 200,
+                                child: Lottie.asset('assets/gallery.json',
+                                    repeat: true,
+                                    reverse: true,
+                                    animate: true)),
+                            /* Icon(
+                              Icons.photo,
+                              size: 150,
+                              color: Colors.black26,
+                            )*/
+                            //ethe.....
+                          ],
+                        ),
                       )
-                    ],
-                  ),
-                )
-              : Image.file(imageFile),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        //here we have to add prediction
-        Column(
-          children: [
-            Container(
-              width: 300,
-              height: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.green[300],
-                borderRadius: BorderRadius.circular(100),
+                    : Image.file(imageFile),
               ),
-              child: name != null
-                  ? Text(
-                      "Name  - ${name}",
-                      style: TextStyle(fontSize: 20),
-                    )
-                  : Text(
-                      "Name - ",
-                      style: TextStyle(fontSize: 20),
+              SizedBox(
+                height: 5,
+              ),
+              //here we have to add prediction
+              Column(
+                children: [
+                  Container(
+                    width: 300,
+                    height: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.green[300],
+                      borderRadius: BorderRadius.circular(100),
                     ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Container(
-              width: 300,
-              height: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.green[300],
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: accuracy != null
-                  ? Text(
-                      " Confidence  - ${accuracy}",
-                      style: TextStyle(fontSize: 20),
-                    )
-                  : Text(
-                      "Confidence  -  ",
-                      style: TextStyle(fontSize: 20),
-                    ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-                width: 60,
-                height: 70,
-                child: RaisedButton(
-                  child: Icon(
-                    Icons.photo_library,
-                    size: 50,
+                    child: name != null
+                        ? Text(
+                            "Name  - ${name}",
+                            style: TextStyle(fontSize: 20),
+                          )
+                        : Text(
+                            "Name - ",
+                            style: TextStyle(fontSize: 20),
+                          ),
                   ),
-                  onPressed: openGallery,
-                )),
-            SizedBox(
-              width: 20,
-            ),
-            Container(
-                child: FloatingActionButton.extended(
-              icon: Icon(
-                Icons.cancel,
-                size: 10,
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    width: 300,
+                    height: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.green[300],
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: accuracy != null
+                        ? Text(
+                            " Confidence  - ${accuracy}",
+                            style: TextStyle(fontSize: 20),
+                          )
+                        : Text(
+                            "Confidence  -  ",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                  ),
+                ],
               ),
-              onPressed: cancelpic,
-              label: Text("cancel"),
-              backgroundColor: Colors.pink,
-            ))
-          ],
-        ),
-        RaisedButton(
-          child:Text("Voice"),
-          onPressed:(){
-              showAlertDialog(context);
-          } ,
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      width: 80,
+                      height: 70,
+                      child: RaisedButton(
+                        child: Icon(
+                          Icons.photo_library,
+                          size: 50,
+                        ),
+                        onPressed: openGallery,
+                      )),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                      child: FloatingActionButton.extended(
+                    icon: Icon(
+                      Icons.cancel,
+                      size: 10,
+                    ),
+                    onPressed: cancelpic,
+                    label: Text("cancel"),
+                    backgroundColor: Colors.pink,
+                  ))
+                ],
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /*(RaisedButton(
+                    child: Text("Voice"),
+                    onPressed: () {
+                      showAlertDialog(context);
+                    },
+                  ),*/
+                  InkWell(
+                    onTap: () {
+                      showAlertDialog(context);
+                    },
+                    child: Card(
+                        color: Colors.cyan,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Container(
+                          width: 100,
+                          height: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Text('Voice'), Icon(Icons.volume_up)],
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  InkWell(
+                    child: Card(
+                        color: Colors.cyan,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Container(
+                          width: 100,
+                          height: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Defination'),
+                              Icon(Icons.volume_up)
+                            ],
+                          ),
+                        )),
+                    onTap: () {
+                      _search();
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return check
+                                ? CircularProgressIndicator()
+                                : CustomDialogBox(
+                                    details: details,
+                                  );
+                          });
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
-        RaisedButton(
-        child:Text("Definition"),  
-        onPressed:()
-        {
-              _search();
-              showDialog(context: context,
-                  builder: (BuildContext context){
-                  return CustomDialogBox(
-                    details: details,
-                   
-                  );
-                  }
-                );
-        })
-
-      ],
-            ),
-          ),
         ),
+      ),
     );
   }
 }

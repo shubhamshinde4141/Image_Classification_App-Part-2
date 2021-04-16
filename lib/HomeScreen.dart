@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_classify_app/Custom_Card.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -54,7 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 20,
                 ),
-                Container(
+
+                //He replace karaycha gallery ni
+                /*Container(
                   width: 150,
                   height: 50,
                   decoration: BoxDecoration(
@@ -74,11 +77,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icons.image,
                     ),
                   ),
+                ),*/
+                CategoryCard(
+                  title: 'Gallery',
+                  svgSrc: 'assets/images/Hamburger.svg',
                 ),
+                //eeth paryant..........
+
                 SizedBox(
                   height: 20,
                 ),
-                Container(
+
+                ////////eeteh Camreaaaaaa
+                /* Container(
                   width: 150,
                   height: 50,
                   child: RaisedButton.icon(
@@ -94,7 +105,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icons.camera,
                     ),
                   ),
+                ),*/
+
+                CategoryCard(
+                  title: 'Camera',
+                  svgSrc: 'assets/images/package1.svg',
                 ),
+
+                ///////////eethparyant
               ],
             ),
           ),
