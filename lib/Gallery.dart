@@ -42,7 +42,7 @@ class _MyGalleryState extends State<MyGallery> {
   final FlutterTts flutterTts = FlutterTts();
   bool flag = false;
   GoogleTranslator translator = GoogleTranslator();
-  bool check = true;
+  bool check = false;
 
   Future _speak() async {
     await flutterTts.setLanguage("en-IN");
@@ -63,7 +63,7 @@ class _MyGalleryState extends State<MyGallery> {
         .get(url + name.trim(), headers: {'Authorization': "Token " + token});
     details = json.decode(response.body);
     setState(() {
-      check = false;
+      check = true;
     });
     print(details);
   }
@@ -365,15 +365,20 @@ class _MyGalleryState extends State<MyGallery> {
                         )),
                     onTap: () {
                       _search();
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return check
-                                ? CircularProgressIndicator()
-                                : CustomDialogBox(
-                                    details: details,
-                                  );
-                          });
+                      check
+                          ? showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CustomDialogBox(
+                                  details: details,
+                                );
+                              })
+                          : Container(
+                              height: 50,
+                              width: 50,
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.amber,
+                              ));
                     },
                   ),
                 ],

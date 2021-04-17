@@ -26,8 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<String> imagenames = [
-    "assets/images/Hamburger.svg",
-    "assets/images/package1.svg",
+    "assets/images/gallery.svg",
+    "assets/images/camera.svg",
   ];
   List<String> imagetags = [
     'Gallery',

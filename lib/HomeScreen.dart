@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),*/
                 CategoryCard(
                   title: 'Gallery',
-                  svgSrc: 'assets/images/Hamburger.svg',
+                  svgSrc: 'assets/images/gallery.svg',
                 ),
                 //eeth paryant..........
 
@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 CategoryCard(
                   title: 'Camera',
-                  svgSrc: 'assets/images/package1.svg',
+                  svgSrc: 'assets/images/camera.svg',
                 ),
 
                 ///////////eethparyant

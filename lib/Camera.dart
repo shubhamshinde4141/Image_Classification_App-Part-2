@@ -1,8 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:tflite/tflite.dart';
+import 'package:translator/translator.dart';
+
+import 'constants.dart';
+import 'custom_dialogue_box.dart';
 
 class MyCamera extends StatefulWidget {
   @override
@@ -27,6 +36,15 @@ class _MyCameraState extends State<MyCamera> {
   List ls;
   String name;
   String accuracy;
+  String token = "66be94c19b9bff1b6408359d5304b75194c3cce0";
+  String url = "https://owlbot.info/api/v4/dictionary/";
+  String head = "Authorization: Token 66be94c19b9bff1b6408359d5304b75194c3cce0";
+
+  Map<String, dynamic> details;
+  final FlutterTts flutterTts = FlutterTts();
+  bool flag = false;
+  GoogleTranslator translator = GoogleTranslator();
+  bool check = true;
 
   Future openCamera() async {
     var picture = await picker.getImage(source: ImageSource.camera);
@@ -35,6 +53,106 @@ class _MyCameraState extends State<MyCamera> {
       isloaded = true;
       applymodeltoimage(imageFile);
     });
+  }
+
+  Future _speak() async {
+    await flutterTts.setLanguage("en-IN");
+    await flutterTts.speak(name);
+  }
+
+  Future _speak1() async {
+    var translation = await translator.translate(name, to: 'hi');
+    print(translation);
+
+    //await flutterTts.speak(translation);
+    await flutterTts.setLanguage("hi-IN");
+    await flutterTts.speak(translation.text);
+  }
+
+  Future _speak2() async {
+    var translation = await translator.translate(name, to: 'mr');
+    print(translation);
+
+    //await flutterTts.speak(translation);
+    await flutterTts.setLanguage("mr-IN");
+    await flutterTts.speak(translation.text);
+  }
+
+  _search() async {
+    Response response = await http
+        .get(url + name.trim(), headers: {'Authorization': "Token " + token});
+    details = json.decode(response.body);
+    setState(() {
+      check = false;
+    });
+    print(details);
+  }
+
+  showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            content: (flag
+                ? IconButton(
+                    icon: Icon(Icons.volume_up),
+                    onPressed: () {},
+                    iconSize: 30,
+                  )
+                : IconButton(
+                    icon: Icon(Icons.volume_down),
+                    onPressed: () {},
+                    iconSize: 30,
+                  )),
+            actions: [
+              Card(
+                color: kBlueColor,
+                child: FlatButton(
+                  child: Text(
+                    "English",
+                    style: TextStyle(fontSize: 15, color: Colors.black),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      flag = true;
+                    });
+                    _speak();
+                  },
+                ),
+              ),
+              Card(
+                color: kBlueColor,
+                child: FlatButton(
+                  child: Text(
+                    "Hindi",
+                    style: TextStyle(fontSize: 15, color: Colors.black),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      flag = true;
+                    });
+                    _speak2();
+                  },
+                ),
+              ),
+              Card(
+                color: kActiveIconColor,
+                child: FlatButton(
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(fontSize: 15, color: Colors.black),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ],
+          );
+        });
+      },
+    );
   }
 
   load_model() async {
@@ -79,6 +197,7 @@ class _MyCameraState extends State<MyCamera> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.cyan[100],
       appBar: AppBar(
         backgroundColor: Color(0xff885566),
         title: Text("Camera"),
@@ -90,10 +209,16 @@ class _MyCameraState extends State<MyCamera> {
           child: Column(
             children: [
               Container(
-                height: 500,
+                height: MediaQuery.of(context).size.height * 0.5,
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: imageFile == null
-                    ? Center(
+                    ? Container(
+                        height: 50, //MediaQuery.of(context).size.height *0.2,
+                        width: 50,
+                        child: Lottie.asset('assets/camera.json',
+                            repeat: true, reverse: true, animate: true))
+
+                    /* Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -103,12 +228,14 @@ class _MyCameraState extends State<MyCamera> {
                             ),
                           ],
                         ),
-                      )
+                      )*/
+
                     : Image.file(imageFile),
               ),
               SizedBox(
                 height: 5,
               ),
+
               //here we have to add prediction text
               Column(
                 children: [
@@ -184,7 +311,78 @@ class _MyCameraState extends State<MyCamera> {
                     backgroundColor: Colors.pink,
                   ))
                 ],
-              )
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /*(RaisedButton(
+                    child: Text("Voice"),
+                    onPressed: () {
+                      showAlertDialog(context);
+                    },
+                  ),*/
+                  InkWell(
+                    onTap: () {
+                      showAlertDialog(context);
+                    },
+                    child: Card(
+                        color: kActiveIconColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Container(
+                          width: 100,
+                          height: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Text('Voice'), Icon(Icons.volume_up)],
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  InkWell(
+                    child: Card(
+                        color: kActiveIconColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Container(
+                          width: 100,
+                          height: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Defination'),
+                              Icon(Icons.volume_up)
+                            ],
+                          ),
+                        )),
+                    onTap: () {
+                      _search();
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return check
+                                ? Container(
+                                    height: 100,
+                                    width: 100,
+                                    child: CircularProgressIndicator(
+                                      value: 10,
+                                    ),
+                                  )
+                                : CustomDialogBox(
+                                    details: details,
+                                  );
+                          });
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ),
